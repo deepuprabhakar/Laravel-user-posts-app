@@ -1,0 +1,73 @@
+<h3>Posts</h3>
+
+<loading *ngIf="isLoading"></loading>
+
+<div *ngIf="!isLoading">
+    <div class="row">
+        <div class="col-md-6">
+             <div class="form-group">
+                <select class="form-control" #u (change)="reloadPosts({ userId: u.value })">
+                    <option value="">Select User</option>
+                    <option *ngFor="#user of users" value="{{ user.id }}">
+                        {{ user.name }}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <loading *ngIf="postsLoading"></loading>
+            <div *ngIf="!postsLoading">
+            <!-- Pagination -->
+            <pagination [items]="posts" (page-changed)="onPageChanged($event)"></pagination>
+            <!-- List of posts -->
+            <div class="list-group">
+                <a 
+                    class="list-group-item" 
+                    *ngFor="#post of pagedPosts" 
+                    (click)="readPost(post)"
+                    [class.active]="currentPost == post">
+                    {{ post.title }}
+                </a>
+            </div>
+            <!-- ./List of posts -->
+            </div>
+        </div>
+        <div class="col-md-6">
+            <!-- Post content -->
+            <div *ngIf="currentPost">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{ currentPost.title }}</h3>
+                    </div>
+                    <div class="panel-body">
+                        {{ currentPost.body }}
+                        <hr>
+                        <h6>Comments</h6>
+                        <loading *ngIf="commentLoading"></loading>
+                        <div *ngIf="!commentLoading">
+                            <div class="media" *ngFor="#comment of comments" >
+                                <div class="media-left">
+                                    <a>
+                                        <img 
+                                            class="media-object img-thumbnail img-circle" 
+                                            src="http://lorempixel.com/80/80/people?random={{ comment.id + 99 }}" 
+                                            alt="User Image">
+                                    </a>
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="media-heading">
+                                        {{ comment.name }}
+                                    </h4>
+                                    {{ comment.body }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ./Post content -->
+        </div>
+    </div>
+</div>
